@@ -20,7 +20,7 @@
     "@protoworx/event-bus": "^1.0.1"
   },
   "devDependencies": {
-    "@happy-dom/global-registrator": "^15.0.0",
+    "@happy-dom/global-registrator": "^20.0.10",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.1.0",
     "@testing-library/react-hooks": "^8.0.1",
