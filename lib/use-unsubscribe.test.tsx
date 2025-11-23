@@ -1,7 +1,5 @@
 import { EventBus } from "@protoworx/event-bus";
 import { beforeEach, mock } from "bun:test";
-import React from "react";
-import { Provider } from "./event-bus-context";
 
 type TestEventBus = {
   test: string;
@@ -21,7 +19,3 @@ beforeEach(() => {
     mock(() => {})
   );
 });
-
-const wrapper = ({ children }: { children: React.ReactNode }) => (
-  <Provider eventBus={eventBus}>{children}</Provider>
-);
