@@ -1,4 +1,5 @@
 export { EventBusContext, Provider } from "./lib/event-bus-context";
+export { useDebouncedEmit } from "./lib/use-debounced-emit";
 export { useEmitEvent } from "./lib/use-emit-event";
 export { useEventBus } from "./lib/use-event-bus";
 export { useSubscribe } from "./lib/use-subscribe";
