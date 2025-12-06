@@ -11,6 +11,11 @@ export const Provider = ({
     throw new Error("eventBus is required");
   }
   const ref = useRef<EventBus<any>>(eventBus);
+  
+  // Update ref when eventBus changes
+  if (ref.current !== eventBus) {
+    ref.current = eventBus;
+  }
 
   return (
     <EventBusContext.Provider value={ref.current}>
