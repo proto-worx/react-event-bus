@@ -25,9 +25,13 @@ describe("useSubscribe", () => {
     renderHook(() => useSubscribe<TestEventBus>("test", mockListener), {
       wrapper,
     });
-    expect(eventBus.get("listeners")).toStrictEqual(
-      new Map([["test", new Set([mockListener])]])
-    );
+    const listeners = eventBus.get("listeners")! as Map<
+      keyof TestEventBus,
+      Set<(event: string) => void>
+    >;
+
+    expect(listeners.has("test")).toBe(true);
+    expect(listeners.get("test")?.size).toBe(1);
   });
 
   it("should subscribe to an event and emit the event", () => {
@@ -39,12 +43,31 @@ describe("useSubscribe", () => {
     expect(mockListener).toHaveBeenCalledWith("test");
   });
 
-  it("should unsubscribe from an event", () => {
+  it("should unsubscribe from an event on unmount", () => {
     const mockListener = mock(() => {});
-    renderHook(() => useSubscribe<TestEventBus>("test", mockListener), {
-      wrapper,
-    });
-    eventBus.unsubscribe("test", mockListener);
-    expect(eventBus.get("listeners")).toStrictEqual(new Map());
+    const { unmount } = renderHook(
+      () => useSubscribe<TestEventBus>("test", mockListener),
+      { wrapper }
+    );
+    unmount();
+
+    const listeners = eventBus.get("listeners")! as Map<
+      keyof TestEventBus,
+      Set<(event: string) => void>
+    >;
+    expect(listeners.has("test")).toBe(false);
+    expect(listeners.get("test")?.size).toBeUndefined();
+  });
+
+  it("should call updated listener after rerender", () => {
+    const firstListener = mock(() => {});
+    const secondListener = mock(() => {});
+    const { rerender } = renderHook(
+      ({ listener }) => useSubscribe<TestEventBus>("test", listener),
+      { wrapper, initialProps: { listener: firstListener } }
+    );
+    rerender({ listener: secondListener });
+    eventBus.emit("test", "data");
+    expect(secondListener).toHaveBeenCalledWith("data");
   });
 });
