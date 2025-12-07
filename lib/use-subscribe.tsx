@@ -7,20 +7,20 @@ export const useSubscribe = <TDefinedMappings extends { [key: string]: any }>(
 ) => {
   const eventBus = useEventBus<TDefinedMappings>();
   const listenerRef = useRef(listener);
-  
+
   // Keep the listener ref up to date
   useEffect(() => {
     listenerRef.current = listener;
   }, [listener]);
-  
+
   useEffect(() => {
     // Create a stable wrapper function
     const stableListener = (data: TDefinedMappings[keyof TDefinedMappings]) => {
       listenerRef.current(data);
     };
-    
+
     eventBus.subscribe(event, stableListener);
-    
+
     return () => {
       eventBus.unsubscribe(event, stableListener);
     };
